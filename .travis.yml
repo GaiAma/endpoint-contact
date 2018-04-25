@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - "8"
+cache: yarn
+script: yarn deploy
+after_script: yarn alias
+env:
+  global:
+    # NOW_TOKEN
+    secure: 1TD/LMheY+ngz0dafsfV+d7Wb/YXuRvywrGTgBTbQx/sTW1Lfv0cZpX3yGTr7av2Pqj+1ytrvA7UdwHKl3GOEyc+ENBoHR/bQWaGi5jHJ0v1JI5HJfijU37K4+aZUYOKISJ7FVPRxo9v6j/7kH18CWtXs/fk0ZREm7ayjkMcN3d2VmDxQeAIOSpQd1zs8lx4ElA2S/731ukHG4gKHla3Ikdts/DEoGhDp5bo9l7mGFwqtEMdAq+C9C/zU9VJ7cXSEwsJKAvrLj8UVLT0q6zBQFw7NfEC5yf2y1XZAFmbvjdLFOOpXz7UwwUmFSf+4KTHEobVjlxC8bl2idm5zQ9OlzHyZZpr+vY5cMyRtTO58sKCfzISOCLlRjIg58UpNmDomH11UasM5Xi2FQzGsT925kQF/qgra+7mjak8+EoPC8MlFKKHect54240O/Mbu4dKj5icyaQ3kFoEYGpukqKUhTdpRMH51ZaUfjer2WvwFp3OyL6Ng7DtGhjB9XItxBj0M26iiBKnHgcm1mMpS6H8HbxcWMC7kbGudN7LG3IRg403rGA+Lbvr0cOofR8YEYl/d9aWX4jeeuJ5xlHec+SMBhq9wo+NYpOVtFr51ZrAM9qFf2quC/iP+fYuJW2FQjXMkPlA8b3xFx4lSTAvWGvCiVfaDVSkUzeY+zPpGAmrudU=

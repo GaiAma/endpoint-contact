@@ -1,0 +1,10 @@
+{
+  "name": "gaiama-contact-endpoint",
+  "public": true,
+  "alias": "gaiama-contact",
+  "env": {
+    "GAIAMA_CONTACT_EMAIL": "@gaiama_contact_email",
+    "GAIAMA_SPARKPOST_EMAIL": "@gaiama_sparkpost_email",
+    "SPARKPOST_API_KEY": "@sparkpost_api_key"
+  }
+}
