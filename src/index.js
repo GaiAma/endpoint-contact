@@ -27,6 +27,12 @@ const sanitizeHtmlOptions = {
   allowedAttributes: [],
 }
 
+const sanitizeMessage = compose(
+  str => str.replace(/&lt;3/g, `<3`),
+  str => sanitizeHtml(str, sanitizeHtmlOptions),
+  str => str.replace(/<3/g, `&lt;3`)
+)
+
 const middlewares = compose(
   nosniff,
   cors,
@@ -40,7 +46,7 @@ const handleContactRequest = async (req, res) => {
     const { email, message: _message, lang: _lang = `en` } = await json(req)
 
     const lang = sanitizeHtml(`${_lang}`, sanitizeHtmlOptions)
-    const message = sanitizeHtml(`${_message}`, sanitizeHtmlOptions)
+    const message = sanitizeMessage(`${_message}`)
     const { subject } = Strings[lang]
 
     if (!isEmail(email)) {
@@ -63,7 +69,6 @@ const handleContactRequest = async (req, res) => {
         },
         reply_to: email,
         subject,
-        // html: `<html><body><p>${message}</p></body></html>`,
         text: message,
       },
       recipients: [

@@ -1,5 +1,5 @@
 {
-  "name": "gaiama-contact-endpoint",
+  "name": "gaiama-endpoint-contact",
   "public": true,
   "alias": "gaiama-contact",
   "env": {

@@ -7,11 +7,12 @@
   "license": "MIT",
   "scripts": {
     "start": "micro",
-    "dev": "export $(cat ../../.env-api | grep -v ^# | xargs) && micro-dev",
+    "dev": "export $(cat ../.env | grep -v ^# | xargs) && micro-dev",
     "build": "babel src --out-dir .",
     "watch": "yarn build --watch",
     "deploy": "now --token $NOW_TOKEN --npm",
-    "alias": "now alias --token $NOW_TOKEN"
+    "alias": "now alias --token $NOW_TOKEN",
+    "now:cleanup": "now rm gaiama-endpoint-contact --safe --yes"
   },
   "dependencies": {
     "micro": "^9.1.4",
