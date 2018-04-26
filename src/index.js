@@ -22,14 +22,20 @@ const Strings = {
   },
 }
 
-const sanitizeHtmlOptions = {
-  allowedTags: [],
-  allowedAttributes: [],
-}
+const sanitizeText = compose(
+  str =>
+    sanitizeHtml(str, {
+      allowedTags: [],
+      allowedAttributes: [],
+    }),
+  str => str.trim()
+)
 
+// preserve <3 and ensure
+// sanitize-html won't strip everything behind <3
 const sanitizeMessage = compose(
   str => str.replace(/&lt;3/g, `<3`),
-  str => sanitizeHtml(str, sanitizeHtmlOptions),
+  sanitizeText,
   str => str.replace(/<3/g, `&lt;3`)
 )
 
@@ -45,7 +51,7 @@ const handleContactRequest = async (req, res) => {
   try {
     const { email, message: _message, lang: _lang = `en` } = await json(req)
 
-    const lang = sanitizeHtml(`${_lang}`, sanitizeHtmlOptions)
+    const lang = sanitizeText(`${_lang}`)
     const message = sanitizeMessage(`${_message}`)
     const { subject } = Strings[lang]
 
