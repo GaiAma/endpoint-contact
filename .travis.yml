@@ -4,6 +4,10 @@ node_js:
 cache: yarn
 script: yarn deploy
 after_script: yarn alias
+notifications:
+  email:
+    on_success: never
+    on_failure: always
 env:
   global:
   # NOW_TOKEN
