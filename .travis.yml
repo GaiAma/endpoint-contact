@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- '8'
+- 'lts/*'
 cache: yarn
 script: yarn deploy
 after_script: yarn alias

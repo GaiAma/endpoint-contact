@@ -8,13 +8,15 @@
   "scripts": {
     "start": "micro",
     "dev": "export $(cat ../.env | grep -v ^# | xargs) && micro-dev",
-    "build": "babel src --out-dir .",
+    "build": "NODE_ENV=production babel src --out-dir .",
     "watch": "yarn build --watch",
     "deploy": "now --token $NOW_TOKEN --npm",
     "alias": "now alias --token $NOW_TOKEN",
     "now:cleanup": "now rm gaiama-endpoint-contact --safe --yes"
   },
   "dependencies": {
+    "autolinker": "^1.6.2",
+    "content-type": "^1.0.4",
     "micro": "^9.1.4",
     "micro-cors": "^0.1.0",
     "micro-nosniff": "^1.0.1",
@@ -23,6 +25,7 @@
     "ramda": "^0.25.0",
     "sanitize-html": "^1.18.2",
     "sparkpost": "^2.1.2",
+    "urlencoded-body-parser": "^2.0.1",
     "validator": "^9.4.1"
   },
   "devDependencies": {

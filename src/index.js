@@ -3,15 +3,15 @@ import { router, post } from 'microrouter'
 import microCors from 'micro-cors'
 import nosniff from 'micro-nosniff'
 import ratelimit from 'micro-ratelimit'
+import contentType from 'content-type'
 import { isEmail } from 'validator'
+import Autolinker from 'autolinker'
 import Sparkpost from 'sparkpost'
-import { compose, curry } from 'ramda'
+import { compose, curry, trim } from 'ramda'
 import sanitizeHtml from 'sanitize-html'
+import urlEncodedParse from 'urlencoded-body-parser'
 
-const cors = microCors({
-  allowMethods: [`POST`],
-  origin: `https://www.gaiama.org`,
-})
+const isProduction = process.env.NODE_ENV === `production`
 
 const Strings = {
   en: {
@@ -28,28 +28,44 @@ const sanitizeText = compose(
       allowedTags: [],
       allowedAttributes: [],
     }),
-  str => str.trim()
+  trim
 )
 
 // preserve <3 and ensure
 // sanitize-html won't strip everything behind <3
+// preserve line breaks
+// auto link urls, truncated to 32 chars
 const sanitizeMessage = compose(
-  str => str.replace(/&lt;3/g, `<3`),
+  str => Autolinker.link(str, { truncate: { length: 60, location: `smart` } }),
+  str => str.replace(/(\r\n|\n\r|\r|\n)/g, `<br>`),
+  str => str.replace(/&lt;3/g, `♡`),
   sanitizeText,
   str => str.replace(/<3/g, `&lt;3`)
 )
 
 const middlewares = compose(
   nosniff,
-  cors,
+  microCors({
+    allowMethods: [`OPTIONS`, `POST`],
+    origin: isProduction ? process.env.ENDPOINT_CORS_ORIGIN : `*`,
+  }),
   curry(ratelimit)({ window: 5000, limit: 1, headers: true })
 )
 
 const spark = new Sparkpost()
 
+const parser = {
+  'application/json': json,
+  'application/x-www-form-urlencoded': urlEncodedParse,
+}
+
 const handleContactRequest = async (req, res) => {
+  const { type = `application/json` } = contentType.parse(req)
+
   try {
-    const { email, message: _message, lang: _lang = `en` } = await json(req)
+    const { email, message: _message, lang: _lang = `en` } = await parser[type](
+      req
+    )
 
     const lang = sanitizeText(`${_lang}`)
     const message = sanitizeMessage(`${_message}`)
@@ -70,18 +86,19 @@ const handleContactRequest = async (req, res) => {
       },
       content: {
         from: {
-          name: `GaiAma ContactForm`,
-          email: process.env.GAIAMA_SPARKPOST_EMAIL,
+          name: process.env.ENDPOINT_CONTACT_NAME,
+          email: process.env.ENDPOINT_SPARKPOST_EMAIL,
         },
         reply_to: email,
         subject,
         text: message,
+        html: message,
       },
       recipients: [
         {
           address: {
-            name: `GaiAma.org`,
-            email: process.env.GAIAMA_CONTACT_EMAIL,
+            name: process.env.ENDPOINT_CONTACT_NAME,
+            email: process.env.ENDPOINT_CONTACT_EMAIL,
           },
         },
       ],
@@ -93,4 +110,4 @@ const handleContactRequest = async (req, res) => {
   }
 }
 
-export default router(post(`/`, middlewares(handleContactRequest)))
+export default middlewares(router(post(`/`, handleContactRequest)))
