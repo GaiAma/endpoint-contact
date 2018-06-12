@@ -49,7 +49,7 @@ const middlewares = compose(
     allowMethods: [`OPTIONS`, `POST`],
     origin: isProduction ? process.env.ENDPOINT_CORS_ORIGIN : `*`,
   }),
-  curry(ratelimit)({ window: 5000, limit: 1, headers: true })
+  curry(ratelimit)({ window: 10000, limit: 2, headers: true })
 )
 
 const spark = new Sparkpost()
