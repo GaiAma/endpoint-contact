@@ -25,7 +25,7 @@ const Strings = {
 const sanitizeText = compose(
   str =>
     sanitizeHtml(str, {
-      allowedTags: [],
+      allowedTags: [`br`],
       allowedAttributes: [],
     }),
   trim
